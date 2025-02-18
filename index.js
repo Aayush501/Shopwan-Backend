@@ -2,6 +2,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 
 const AdminRoutes = require('./routes/AdminRoutes.js');
 const ProductRoutes = require('./routes/ProductRoutes.js');
@@ -34,6 +36,8 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Backend is running...");
 });
+
+app.use("/uploads", express.static("uploads"));
 
 app.use("/admin", AdminRoutes);
 app.use("/products", ProductRoutes);

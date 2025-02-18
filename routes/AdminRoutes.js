@@ -3,6 +3,8 @@ const router = express.Router();
 const Product = require("../schemas/Product"); // Importing the Product model
 const Admin = require("../schemas/Admin"); // Importing the Admin model (if needed)
 const { body, validationResult } = require("express-validator");
+const multer = require("multer");
+const path = require("path");
 
 // Middleware for validating admin (Authentication to be implemented)
 const verifyAdmin = async (req, res, next) => {
@@ -17,23 +19,43 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
+const storage = multer.diskStorage({
+  destination: "./uploads", // Local folder to store images
+  filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  }
+});
+const upload = multer({ storage });
+
 // Route: Add a new product
+// Add Product with Image Upload
 router.post(
   "/add-product",
+  upload.array("images", 5), // Accept up to 5 images
   [
     body("name").notEmpty().withMessage("Product name is required"),
     body("description").notEmpty().withMessage("Description is required"),
     body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
     body("category").notEmpty().withMessage("Category is required"),
     body("stock").isInt({ min: 0 }).withMessage("Stock must be a non-negative number"),
-    body("images").isArray({ min: 1 }).withMessage("At least one image is required"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     try {
-      const newProduct = new Product(req.body);
+      // Store image file paths in MongoDB
+      const imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+
+      const newProduct = new Product({
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        category: req.body.category,
+        stock: req.body.stock,
+        images: imageUrls,
+      });
+
       await newProduct.save();
       res.status(201).json({ message: "Product added successfully", product: newProduct });
     } catch (error) {
@@ -43,7 +65,7 @@ router.post(
 );
 
 // Route: Remove a product
-router.delete("/remove-product/:id", verifyAdmin, async (req, res) => {
+router.delete("/remove-product/:id", async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
