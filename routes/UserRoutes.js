@@ -50,23 +50,31 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
+    const k = "";
+
     try {
       const { productId } = req.body;
+      k = k+""+productId;
 
       const product = await Product.findOne({ uid: productId });
       if (!product) return res.status(404).json({ message: "Product not found" });
+      k = k +"" + JSON.stringify(product);
 
       const user = await User.findOne({email : req.body.email});
       if (!user) return res.status(404).json({ message: "User not found" });
+      k = k +"" + JSON.stringify(user);
 
       if (user.cart.includes(productId)) return res.status(400).json({ message: "Product already in cart" });
+      k = k + "product not in cart.";
 
       user.cart.push(productId);
       await user.save();
+      
+      k = k + "cart saved";
 
       res.json({ message: "Product added to cart", cart: user.cart });
     } catch (error) {
-      res.status(500).json({ message: "Error adding product to cart", error });
+      res.status(500).json({k, message: "Error adding product to cart", error });
     }
   }
 );
