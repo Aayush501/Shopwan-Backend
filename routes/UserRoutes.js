@@ -101,7 +101,7 @@ router.post(
 );
 
 // ✅ Route: Remove a product from the cart
-router.delete("/cart/remove/:productId", verifyUser, async (req, res) => {
+router.delete("/cart/remove/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
     const user = req.user;
@@ -119,7 +119,7 @@ router.delete("/cart/remove/:productId", verifyUser, async (req, res) => {
 });
 
 // ✅ Route: View User's Cart with Product Details
-router.get("/cart", verifyUser, async (req, res) => {
+router.get("/cart", async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("cart");
     res.json({ cart: user.cart });
