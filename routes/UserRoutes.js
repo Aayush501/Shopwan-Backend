@@ -23,7 +23,13 @@ const verifyUser = async (req, res, next) => {
 
 router.post("/saveUser", async (req, res) => {
   try {
+      console.log("Request Body:", req.body); // Log request data
+
       const { clerkId, name, username, email, phone, profilePic } = req.body;
+
+      if (!email) {
+          return res.status(400).json({ message: "Email is required" });
+      }
 
       // Check if user already exists
       let user = await User.findOne({ email });
@@ -36,7 +42,7 @@ router.post("/saveUser", async (req, res) => {
               phone,
               profilePic,
               cart: [],
-              wishlist: []
+              wishlist: [],
           });
 
           await user.save();
@@ -45,11 +51,10 @@ router.post("/saveUser", async (req, res) => {
 
       res.status(200).json({ message: "User already exists", user });
   } catch (error) {
-      console.error("Error saving user:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Error saving user:", error); // Log full error
+      res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
-
 
 // ✅ Route: Add a product to the cart
 router.post(

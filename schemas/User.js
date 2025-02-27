@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
-}, { timestamps: true }); // Adds createdAt & updatedAt fields
+}, { timestamps: true }); // Adds createdAt & updatedAt fields 
 
 // Creating the User Model
 const User = mongoose.model("User", userSchema);
