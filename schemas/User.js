@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true, // Ensures no duplicate phone numbers
-    match: [/^\d{10}$/, "Phone number must be 10 digits"], // Enforces exactly 10 digits
+    match: [/^\d{12}$/, "Phone number must be 10 digits"], // Enforces exactly 10 digits
   },
   profilePic: {
     type: String, 
