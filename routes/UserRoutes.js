@@ -4,22 +4,6 @@ const User = require("../schemas/User");
 const Product = require("../schemas/Product");
 const { body, validationResult } = require("express-validator");
 
-// Middleware to verify user existence
-const verifyUser = async (req, res, next) => {
-  try {
-    const userId = req.headers["user-id"]; // Replace with actual authentication (JWT)
-    if (!userId) return res.status(401).json({ message: "User ID required in headers" });
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(500).json({ message: "User authentication error", error });
-  }
-};
-
 
 router.post("/saveUser", async (req, res) => {
   try {
@@ -61,7 +45,6 @@ router.post("/saveUser", async (req, res) => {
 // ✅ Route: Add a product to the cart
 router.post(
   "/cart/add",
-  verifyUser,
   [body("productId").notEmpty().withMessage("Product ID is required")],
   async (req, res) => {
     const errors = validationResult(req);
@@ -91,7 +74,6 @@ router.post(
 // ✅ Route: Add a product to the wishlist
 router.post(
   "/wishlist/add",
-  verifyUser,
   [body("productId").notEmpty().withMessage("Product ID is required")],
   async (req, res) => {
     const errors = validationResult(req);
