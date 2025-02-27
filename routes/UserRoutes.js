@@ -20,6 +20,37 @@ const verifyUser = async (req, res, next) => {
   }
 };
 
+
+router.post("/saveUser", async (req, res) => {
+  try {
+      const { clerkId, name, username, email, phone, profilePic } = req.body;
+
+      // Check if user already exists
+      let user = await User.findOne({ email });
+
+      if (!user) {
+          user = new User({
+              name,
+              username,
+              email,
+              phone,
+              profilePic,
+              cart: [],
+              wishlist: []
+          });
+
+          await user.save();
+          return res.status(201).json({ message: "User created successfully", user });
+      }
+
+      res.status(200).json({ message: "User already exists", user });
+  } catch (error) {
+      console.error("Error saving user:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 // ✅ Route: Add a product to the cart
 router.post(
   "/cart/add",

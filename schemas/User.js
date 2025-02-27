@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
 }, { timestamps: true }); // Adds createdAt & updatedAt fields
 
 // Creating the User Model
