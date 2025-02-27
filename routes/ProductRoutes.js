@@ -16,7 +16,7 @@ const getProductsByCategory = async (category, order, res) => {
 // Route: Get Clothes in Ascending Order
 router.get("/clothes/ascending", (req, res) => {
   getProductsByCategory("clothes", 1, res);
-});
+}); 
 
 // Route: Get Clothes in Descending Order
 router.get("/clothes/descending", (req, res) => {
