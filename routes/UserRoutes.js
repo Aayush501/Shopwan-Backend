@@ -53,28 +53,27 @@ router.post(
     const k = "";
 
     try {
+      console.log("inside try")
       const { productId } = req.body;
-      k = k+""+productId;
+      console.log(productId);
 
       const product = await Product.findOne({ uid: productId });
       if (!product) return res.status(404).json({ message: "Product not found" });
-      k = k +"" + JSON.stringify(product);
+      console.log(product);
 
       const user = await User.findOne({email : req.body.email});
       if (!user) return res.status(404).json({ message: "User not found" });
-      k = k +"" + JSON.stringify(user);
+      console.log(user);
 
       if (user.cart.includes(productId)) return res.status(400).json({ message: "Product already in cart" });
-      k = k + "product not in cart.";
+      console.log("product not in cart.");
 
-      user.cart.push(productId);
+      user.cart.push(product);
       await user.save();
-      
-      k = k + "cart saved";
-
+      console.log("cart saved");
       res.json({ message: "Product added to cart", cart: user.cart });
     } catch (error) {
-      res.status(500).json({k, message: "Error adding product to cart", error });
+      res.status(500).json({ message: "Error adding product to cart", error });
     }
   }
 );
@@ -98,7 +97,7 @@ router.post(
 
       if (user.wishlist.includes(productId)) return res.status(400).json({ message: "Product already in wishlist" });
 
-      user.wishlist.push(productId);
+      user.wishlist.push(product);
       await user.save();
 
       res.json({ message: "Product added to wishlist", wishlist: user.wishlist });
