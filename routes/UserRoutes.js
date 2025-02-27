@@ -69,14 +69,11 @@ router.post(
 
     try {
       const { productId } = req.body;
-      const userId = req.headers.authorization; // Extract user ID from headers
-
-      if (!userId) return res.status(400).json({ message: "User ID required in header" });
 
       const product = await Product.findOne({ uid: productId });
       if (!product) return res.status(404).json({ message: "Product not found" });
 
-      const user = await User.findById(userId);
+      const user = await User.findOne({email : req.body.email});
       if (!user) return res.status(404).json({ message: "User not found" });
 
       if (user.cart.includes(productId)) return res.status(400).json({ message: "Product already in cart" });
@@ -102,14 +99,11 @@ router.post(
 
     try {
       const { productId } = req.body;
-      const userId = req.headers.authorization; // Extract user ID from headers
-
-      if (!userId) return res.status(400).json({ message: "User ID required in header" });
 
       const product = await Product.findOne({ uid: productId });
       if (!product) return res.status(404).json({ message: "Product not found" });
 
-      const user = await User.findById(userId);
+      const user = await User.findOne({email : req.body.email});
       if (!user) return res.status(404).json({ message: "User not found" });
 
       if (user.wishlist.includes(productId)) return res.status(400).json({ message: "Product already in wishlist" });
