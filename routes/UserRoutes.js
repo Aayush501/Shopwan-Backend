@@ -23,15 +23,17 @@ const verifyUser = async (req, res, next) => {
 
 router.post("/saveUser", async (req, res) => {
   try {
-      console.log("Request Body:", req.body); // Log request data
+      console.log("Request Body:", req.body);
 
-      const { clerkId, name, username, email, phone, profilePic } = req.body;
+      const { clerkId, name, username, email, profilePic } = req.body;
+
+      // Extract only the last 10 digits of the phone number
+      const phone = req.body.phone ? req.body.phone.replace(/\D/g, "").slice(-10) : null;
 
       if (!email) {
           return res.status(400).json({ message: "Email is required" });
       }
 
-      // Check if user already exists
       let user = await User.findOne({ email });
 
       if (!user) {
@@ -39,7 +41,7 @@ router.post("/saveUser", async (req, res) => {
               name,
               username,
               email,
-              phone,
+              phone, // Now stores only the last 10 digits
               profilePic,
               cart: [],
               wishlist: [],
@@ -51,7 +53,7 @@ router.post("/saveUser", async (req, res) => {
 
       res.status(200).json({ message: "User already exists", user });
   } catch (error) {
-      console.error("Error saving user:", error); // Log full error
+      console.error("Error saving user:", error);
       res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
