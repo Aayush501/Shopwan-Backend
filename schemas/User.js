@@ -7,6 +7,11 @@ const userSchema = new mongoose.Schema({
     required: true, // Name is mandatory
     trim: true, // Removes leading/trailing spaces
   },
+  username: {
+    type: String,
+    required: true, // Name is mandatory
+    trim: true, // Removes leading/trailing spaces
+  },
   email: {
     type: String,
     required: true,
@@ -21,15 +26,15 @@ const userSchema = new mongoose.Schema({
     match: [/^\d{10}$/, "Phone number must be 10 digits"], // Enforces exactly 10 digits
   },
   profilePic: {
-    type: String, // Storing the image URL or file path
+    type: String, 
     required: false,
   },
   address: {
-    type: String,
-    required: true, // Address is mandatory
+    type: [String],
     trim: true,
   },
-  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
+  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 }, { timestamps: true }); // Adds createdAt & updatedAt fields
 
 // Creating the User Model

@@ -10,7 +10,7 @@ const ProductRoutes = require('./routes/ProductRoutes.js');
 const UserRoutes = require('./routes/UserRoutes.js');
 
 
-require("dotenv").config(); // Loading environment variables from .env file
+require("dotenv").config(); // Loading environment variables from .env file 
 
 // Initializing the Express application
 const app = express();
