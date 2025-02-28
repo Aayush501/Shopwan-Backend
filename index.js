@@ -16,7 +16,7 @@ const app = express();
 
 
 const allowedOrigins = [
-  "http://localhost:5500",  // ✅ Allow localhost only for development
+  "http://127.0.0.1:5500/myAdmin.html",  // ✅ Allow localhost only for development
   "https://shopwan.vercel.app" // ✅ Replace with your actual frontend domain
 ];
 
