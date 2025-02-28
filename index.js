@@ -9,14 +9,32 @@ const AdminRoutes = require('./routes/AdminRoutes.js');
 const ProductRoutes = require('./routes/ProductRoutes.js');
 const UserRoutes = require('./routes/UserRoutes.js');
 
-
 require("dotenv").config(); // Loading environment variables from .env file 
 
 // Initializing the Express application
 const app = express();
 
+
+const allowedOrigins = [
+  "http://localhost:5500",  // ✅ Allow localhost only for development
+  "https://shopwan.vercel.app" // ✅ Replace with your actual frontend domain
+];
+
 // Middleware setup
-app.use(cors()); // Enables Cross-Origin Resource Sharing
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // ✅ Allow cookies (if needed)
+  methods: ["GET", "POST", "PUT", "DELETE"], // ✅ Allowed HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allowed headers
+})); // Enables Cross-Origin Resource Sharing
+
+
 app.use(express.json()); // Parses incoming JSON requests
 
 // Retrieving environment variables
