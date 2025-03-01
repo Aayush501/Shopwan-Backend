@@ -33,6 +33,7 @@ router.post(
   "/add-product",
   upload.array("images", 5), // Accept up to 5 images
   [
+    body("passkey").notEmpty().withMessage("Enter valid passkey"),
     body("name").notEmpty().withMessage("Product name is required"),
     body("description").notEmpty().withMessage("Description is required"),
     body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
@@ -42,6 +43,8 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    if(req.body.passkey === "IamPawanShrivastav")
 
     try {
       // Store image file paths in MongoDB
