@@ -44,6 +44,8 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
+    console.log("Received data:", req.body); 
+
     if(!req.body.passkey === "IamPawanShrivastav"){
       return res.status(500).json({"error":"passkey not matches"});
     }
@@ -60,6 +62,8 @@ router.post(
         stock: req.body.stock,
         images: imageUrls,
       });
+
+      console.log("trying data:", newProduct);       
 
       await newProduct.save();
       res.status(201).json({ message: "Product added successfully", product: newProduct });
