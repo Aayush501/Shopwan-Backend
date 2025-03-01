@@ -56,9 +56,12 @@ router.post(
 
       const newProduct = new Product({
         name: req.body.name,
+        uid: req.body.uid,
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
+        subcategory: req.body.subcategory,
+        actualItem: req.body.actualItem,
         stock: req.body.stock,
         images: imageUrls,
       });
