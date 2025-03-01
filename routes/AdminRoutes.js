@@ -44,7 +44,9 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    if(req.body.passkey === "IamPawanShrivastav")
+    if(!req.body.passkey === "IamPawanShrivastav"){
+      return res.status(500).json({"error":"passkey not matches"});
+    }
 
     try {
       // Store image file paths in MongoDB
