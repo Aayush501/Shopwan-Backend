@@ -16,7 +16,8 @@ const app = express();
 
 
 const allowedOrigins = [
-  "https://shopwan.vercel.app" // ✅ Replace with your actual frontend domain
+  "https://shopwan.vercel.app/", // ✅ Replace with your actual frontend domain
+  "https://shopwanadmin.vercel.app/"
 ];
 
 // Middleware setup
