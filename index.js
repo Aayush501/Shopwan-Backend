@@ -1,8 +1,8 @@
 // Importing required modules
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
-const multer = require("multer");
+// const cors = require("cors");
+// const multer = require("multer");
 const path = require("path");
 
 const AdminRoutes = require('./routes/AdminRoutes.js');
@@ -15,24 +15,24 @@ require("dotenv").config(); // Loading environment variables from .env file
 const app = express();
 
 
-const allowedOrigins = [
-  "https://shopwan.vercel.app", // ✅ Replace with your actual frontend domain
-  "https://shopwanadmin.vercel.app"
-];
+// const allowedOrigins = [
+//   "https://shopwan.vercel.app", // ✅ Replace with your actual frontend domain
+//   "https://shopwanadmin.vercel.app"
+// ];
 
-// Middleware setup
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true, // ✅ Allow cookies (if needed)
-  methods: ["GET", "POST", "PUT", "DELETE"], // ✅ Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allowed headers
-})); // Enables Cross-Origin Resource Sharing
+// // Middleware setup
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true, // ✅ Allow cookies (if needed)
+//   methods: ["GET", "POST", "PUT", "DELETE"], // ✅ Allowed HTTP methods
+//   allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allowed headers
+// })); // Enables Cross-Origin Resource Sharing
 
 
 app.use(express.json()); // Parses incoming JSON requests

@@ -123,4 +123,16 @@ router.put(
   }
 );
 
+router.get(
+  "/all-products",
+  async (req, res) => {
+    try {
+      const getall = await Product.find();
+      res.status(200).json({getall});
+    } catch (error) {
+      res.status(500).json({ message: "Error updating product", error });
+    }
+  }
+)
+
 module.exports = router;
