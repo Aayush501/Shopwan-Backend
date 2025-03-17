@@ -56,8 +56,13 @@ router.get("/footwares/descending", (req, res) => {
 });
 
 // Route: Get All Products (Default Order: Ascending)
-router.get("/all", (req, res) => {
-  getProductsByCategory("all", 1, req, res);
+router.get("/all", async (req, res) => {
+  try{
+    const allProducts = await Product.find();
+    res.status(200).json()
+  } catch(error) {
+    res.status(500).json({ message: "Error fetching products", error });
+  }
 });
 
 module.exports = router;
