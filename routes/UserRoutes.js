@@ -138,8 +138,8 @@ router.get("/cart", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log(user);
-    console.log(user.cart);
+    console.log("User: 18 : "+user);
+    console.log("usrcart: " + user.cart);
 
     res.json({ cart: user.cart });
   } catch (error) {
