@@ -4,6 +4,7 @@ const Product = require("../schemas/Product"); // Importing the Product model
 const Admin = require("../schemas/Admin"); // Importing the Admin model (if needed)
 const { body, validationResult } = require("express-validator");
 const multer = require("multer");
+const { upload } = require("../CloudinaryConfig");
 const path = require("path");
 
 // Middleware for validating admin (Authentication to be implemented)
@@ -19,19 +20,12 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
-const storage = multer.diskStorage({
-  destination: "./uploads", // Local folder to store images
-  filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-  }
-});
-const upload = multer({ storage });
 
 // Route: Add a new product
 // Add Product with Image Upload
 router.post(
   "/add-product",
-  upload.array("images", 5), // Accept up to 5 images
+  upload.array("media", 5), // Allow up to 5 media files (images/videos)
   [
     body("passkey").notEmpty().withMessage("Enter valid passkey"),
     body("name").notEmpty().withMessage("Product name is required"),
@@ -41,18 +35,16 @@ router.post(
     body("stock").isInt({ min: 0 }).withMessage("Stock must be a non-negative number"),
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    console.log("Received data:", req.body); 
-
-    if(!req.body.passkey === "IamPawanShrivastav"){
-      return res.status(500).json({"error":"passkey not matches"});
-    }
-
     try {
-      // Store image file paths in MongoDB
-      const imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+      if (req.body.passkey !== "IamPawanShrivastav") {
+        return res.status(403).json({ error: "Invalid passkey" });
+      }
+
+      // Get Cloudinary URLs for uploaded media (images & videos)
+      const mediaUrls = req.files.map((file) => file.path);
 
       const newProduct = new Product({
         name: req.body.name,
@@ -63,10 +55,8 @@ router.post(
         subcategory: req.body.subcategory,
         actualItem: req.body.actualItem,
         stock: req.body.stock,
-        images: imageUrls,
+        media: mediaUrls, // Store Cloudinary URLs
       });
-
-      console.log("trying data:", newProduct);       
 
       await newProduct.save();
       res.status(201).json({ message: "Product added successfully", product: newProduct });
