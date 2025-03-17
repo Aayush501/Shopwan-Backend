@@ -27,7 +27,7 @@ router.post(
   "/add-product",
   upload.array("media", 5), // Allow up to 5 media files (images/videos)
   [
-    body("passkey").notEmpty().withMessage("Enter valid passkey"),
+    // body("passkey").notEmpty().withMessage("Enter valid passkey"),
     body("name").notEmpty().withMessage("Product name is required"),
     body("description").notEmpty().withMessage("Description is required"),
     body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
@@ -39,9 +39,9 @@ router.post(
       const errors = validationResult(req);
       if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-      if (req.body.passkey !== "IamPawanShrivastav") {
-        return res.status(403).json({ error: "Invalid passkey" });
-      }
+      // if (req.body.passkey !== "IamPawanShrivastav") {
+      //   return res.status(403).json({ error: "Invalid passkey" });
+      // }
 
       // Get Cloudinary URLs for uploaded media (images & videos)
       const mediaUrls = req.files.map((file) => file.path);
