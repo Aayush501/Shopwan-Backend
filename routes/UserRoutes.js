@@ -127,6 +127,7 @@ router.delete("/cart/remove/:productId", async (req, res) => {
 
 // ✅ Route: View User's Cart with Product Details
 router.get("/cart", async (req, res) => {
+  console.log("Trying to fetch user cart items");
   try {
     const userEmail = req.query.email; // Get email from query parameters
     console.log(userEmail);
