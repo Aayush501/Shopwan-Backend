@@ -128,7 +128,16 @@ router.delete("/cart/remove/:productId", async (req, res) => {
 // ✅ Route: View User's Cart with Product Details
 router.get("/cart", async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate("cart");
+    const userEmail = req.query.email; // Get email from query parameters
+    if (!userEmail) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email: userEmail }).populate("cart");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.json({ cart: user.cart });
   } catch (error) {
     res.status(500).json({ message: "Error fetching cart", error });
