@@ -129,6 +129,7 @@ router.delete("/cart/remove/:productId", async (req, res) => {
 router.get("/cart", async (req, res) => {
   try {
     const userEmail = req.query.email; // Get email from query parameters
+    console.log(userEmail);
     if (!userEmail) {
       return res.status(400).json({ message: "Email is required" });
     }
