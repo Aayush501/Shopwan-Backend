@@ -5,15 +5,20 @@ const Product = require("../schemas/Product");
 // Helper function to fetch and sort products
 const getProductsByCategory = async (category, order, req, res) => {
   try {
+    console.log("fetching");
     const filter = category === "all" ? {} : { category }; // Fetch all or specific category
+    console.log("Fetched all or specific category");
     const products = await Product.find(filter).sort({ price: order });
+    console.log("Found sorted Products");
 
     // Attach full image URL to each product
+    console.log("attaching images");
     const productsWithImages = products.map(product => ({
       ...product.toObject(),
       images: product.images.map(img => `${req.protocol}://${req.get("host")}${img}`)
     }));
 
+    console.log("Returning responses");
     res.json(productsWithImages);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error });
