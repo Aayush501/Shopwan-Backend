@@ -65,7 +65,10 @@ router.post(
       if (!user) return res.status(404).json({ message: "User not found" });
       console.log(user);
 
-      if (user.cart.includes(productId)) return res.status(400).json({ message: "Product already in cart" });
+      if (user.cart.includes(product)) {
+        alert("Product Already In Your Cart");
+        return res.status(400).json({ message: "Product already in cart" });
+      }
       console.log("product not in cart.");
 
       user.cart.push(product);
