@@ -67,7 +67,7 @@ router.post(
 
       user.cart.forEach((p) => {
         console.log("p: " + p);
-        if (p === productId) {
+        if (p.toString() === productId) {
           alert("Product Already In Your Cart");
           return res.status(400).json({ message: "Product already in cart" });
         }
