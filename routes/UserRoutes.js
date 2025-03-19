@@ -90,18 +90,29 @@ router.post(
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     try {
+      console.log("inside try");
       const { productId } = req.body;
+      console.log(productId);
 
       const product = await Product.findOne({ uid: productId });
       if (!product) return res.status(404).json({ message: "Product not found" });
+      console.log(product);
 
-      const user = await User.findOne({email : req.body.email});
+      const user = await User.findOne({ email: req.body.email }).populate("wishlist");
       if (!user) return res.status(404).json({ message: "User not found" });
+      console.log(user);
 
-      if (user.wishlist.includes(productId)) return res.status(400).json({ message: "Product already in wishlist" });
+      // Check if the product is already in the wishlist
+      const isProductInWishlist = user.wishlist.some((p) => p.uid === productId);
+      if (isProductInWishlist) {
+        return res.status(400).json({ message: "Product already in wishlist" });
+      }
+
+      console.log("product not in wishlist.");
 
       user.wishlist.push(product);
       await user.save();
+      console.log("wishlist saved");
 
       res.json({ message: "Product added to wishlist", wishlist: user.wishlist });
     } catch (error) {
@@ -109,6 +120,7 @@ router.post(
     }
   }
 );
+
 
 // ✅ Route: Remove a product from the cart
 router.delete("/cart/remove/:productId", async (req, res) => {
