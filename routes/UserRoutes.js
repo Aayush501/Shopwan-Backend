@@ -50,10 +50,8 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const k = "";
-
     try {
-      console.log("inside try")
+      console.log("inside try");
       const { productId } = req.body;
       console.log(productId);
 
@@ -61,18 +59,16 @@ router.post(
       if (!product) return res.status(404).json({ message: "Product not found" });
       console.log(product);
 
-      const user = await User.findOne({email : req.body.email});
+      const user = await User.findOne({ email: req.body.email }).populate("cart");
       if (!user) return res.status(404).json({ message: "User not found" });
       console.log(user);
 
-      user.cart.forEach((p) => {
-        console.log("p: " + p);
-        if (p.toString() === productId) {
-          alert("Product Already In Your Cart");
-          return res.status(400).json({ message: "Product already in cart" });
-        }
-      });
-      
+      // Check if the product is already in the cart
+      const isProductInCart = user.cart.some((p) => p.uid === productId);
+      if (isProductInCart) {
+        return res.status(400).json({ message: "Product already in cart" });
+      }
+
       console.log("product not in cart.");
 
       user.cart.push(product);
