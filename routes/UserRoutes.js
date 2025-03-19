@@ -125,14 +125,26 @@ router.post(
 // ✅ Route: Remove a product from the cart
 router.delete("/cart/remove/:productId", async (req, res) => {
   try {
+    console.log("inside try");
     const { productId } = req.params;
-    const user = req.user;
+    console.log("Product ID to remove:", productId);
 
-    const index = user.cart.indexOf(productId);
-    if (index === -1) return res.status(404).json({ message: "Product not found in cart" });
+    const user = await User.findOne({ email: req.body.email }).populate("cart");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    console.log(user);
 
-    user.cart.splice(index, 1);
+    // Find the product in the cart
+    const productIndex = user.cart.findIndex((p) => p.uid === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+
+    console.log("Product found in cart, removing...");
+
+    // Remove the product from the cart
+    user.cart.splice(productIndex, 1);
     await user.save();
+    console.log("Cart updated");
 
     res.json({ message: "Product removed from cart", cart: user.cart });
   } catch (error) {
