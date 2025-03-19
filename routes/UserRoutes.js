@@ -29,6 +29,7 @@ router.post("/saveUser", async (req, res) => {
               profilePic,
               cart: [],
               wishlist: [],
+              addresses: [], // ✅ Initialize addresses as an empty array
           });
 
           await user.save();
@@ -39,6 +40,54 @@ router.post("/saveUser", async (req, res) => {
   } catch (error) {
       console.error("Error saving user:", error);
       res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+// ✅ Updated Route: Add Multiple Addresses to User
+router.post("/addAddress", async (req, res) => {
+  try {
+    const { userID } = req.query;
+    const { street, city, state, country, postalCode } = req.body;
+
+    if (!userID) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const user = await User.findById(userID);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const newAddress = { street, city, state, country, postalCode };
+    user.addresses.push(newAddress); // ✅ Append new address to array
+    await user.save();
+
+    res.status(200).json({ message: "Address added successfully", user });
+  } catch (error) {
+    console.error("Error adding address:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+// ✅ Route: Get User Addresses
+router.get("/getAddresses/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email }, "address");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Addresses fetched successfully", addresses: user.address });
+  } catch (error) {
+    console.error("Error fetching addresses:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
 
