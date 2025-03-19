@@ -152,6 +152,36 @@ router.delete("/cart/remove/:productId", async (req, res) => {
   }
 });
 
+router.delete("/wishlist/remove/:productId", async (req, res) => {
+  try {
+    console.log("inside try");
+    const { productId } = req.params;
+    console.log("Product ID to remove from wishlist:", productId);
+
+    const user = await User.findOne({ email: req.body.email }).populate("wishlist");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    console.log(user);
+
+    // Find the product in the wishlist
+    const productIndex = user.wishlist.findIndex((p) => p.uid === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ message: "Product not found in wishlist" });
+    }
+
+    console.log("Product found in wishlist, removing...");
+
+    // Remove the product from the wishlist
+    user.wishlist.splice(productIndex, 1);
+    await user.save();
+    console.log("Wishlist updated");
+
+    res.json({ message: "Product removed from wishlist", wishlist: user.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing product from wishlist", error });
+  }
+});
+
+
 // ✅ Route: View User's Cart with Product Details
 router.get("/cart", async (req, res) => {
   console.log("Query Params:", req.query);
