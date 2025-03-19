@@ -207,4 +207,31 @@ router.get("/cart", async (req, res) => {
   }
 });
 
+// ✅ Route: View User's Wishlist with Product Details
+router.get("/wishlist", async (req, res) => {
+  console.log("Query Params:", req.query);
+  console.log("Trying to fetch user wishlist items");
+
+  try {
+    const userEmail = req.query.email; // Get email from query parameters
+    console.log(userEmail);
+
+    if (!userEmail) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email: userEmail }).populate("wishlist");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("User:", user);
+    console.log("User Wishlist:", user.wishlist);
+
+    res.json({ wishlist: user.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching wishlist", error });
+  }
+});
+
 module.exports = router;
