@@ -46,14 +46,14 @@ router.post("/saveUser", async (req, res) => {
 // ✅ Updated Route: Add Multiple Addresses to User
 router.post("/addAddress", async (req, res) => {
   try {
-    const { userID } = req.query;
+    const { email } = req.query;
     const { street, city, state, country, postalCode } = req.body;
 
-    if (!userID) {
-      return res.status(400).json({ message: "User ID is required" });
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
     }
 
-    const user = await User.findById(userID);
+    const user = await User.findOne({email : email});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
